@@ -1,0 +1,3 @@
+# Only the currently implemented audit and split commands.
+# Approved offline installation is required inside the safe zone.
+Pillow==12.1.0

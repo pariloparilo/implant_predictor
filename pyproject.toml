@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "implant-analysis"
+version = "0.2.0"
+description = "Offline implant dataset audit and guarded group split preparation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["Pillow>=12.1,<13"]
+
+[project.optional-dependencies]
+train = ["torch==2.12.1", "torchvision==0.27.1", "matplotlib==3.10.8", "numpy>=2.2,<3"]
+
+[project.scripts]
+implant-audit = "implant_analysis.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["implant_analysis*"]
+
+[tool.setuptools.package-data]
+implant_analysis = ["configs/*.example.json", "templates/*.csv", "README.md"]

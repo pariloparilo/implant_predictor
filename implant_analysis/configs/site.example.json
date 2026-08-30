@@ -1,0 +1,70 @@
+{
+  "data_root": "/안심존/실제_데이터_루트로_수정",
+  "label_root": "라벨링데이터/병원별데이터",
+  "image_root": "원시데이터/병원별데이터",
+  "image_extensions": [
+    ".jpg",
+    ".jpeg",
+    ".png"
+  ],
+  "work_dir": "../work",
+  "json_encoding": "utf-8-sig",
+  "record_path": [],
+  "fields": {
+    "serial": "일련번호",
+    "modality": "촬영방법",
+    "manufacturer": "제조사",
+    "model": "모델명",
+    "diameter": "직경",
+    "length": "길이",
+    "tooth_position": "식립위치",
+    "implant_date": "식립일자",
+    "capture_date": "촬영일자",
+    "hospital": "촬영병원"
+  },
+  "pairing": {
+    "mode": "relative_stem",
+    "csv": null,
+    "verified": false
+  },
+  "aliases_csv": null,
+  "grouping": {
+    "csv": null,
+    "kind": "unverified",
+    "verified": false,
+    "verification_note": ""
+  },
+  "seed": 42,
+  "split": {
+    "ratios": {
+      "train": 0.6,
+      "dev": 0.15,
+      "calibration": 0.1,
+      "test": 0.15
+    },
+    "candidate_count": 64,
+    "core_min_groups": {
+      "train": 20,
+      "dev": 5,
+      "calibration": 10,
+      "test": 20
+    }
+  },
+  "training": {
+    "weights_path": "/승인된_가중치/resnet50-11ad3fa6.pth",
+    "weights_sha256": "실제_승인된_파일의_64자리_SHA256으로_수정",
+    "epochs": 10,
+    "warmup_epochs": 2,
+    "batch_size": 16,
+    "image_size": 224,
+    "head_lr": 0.001,
+    "backbone_lr": 0.0001,
+    "weight_decay": 0.0001,
+    "patience": 5,
+    "device": "cuda",
+    "seed": 42,
+    "rotation_degrees": 3.0,
+    "brightness_contrast": 0.1,
+    "amp": true
+  }
+}
