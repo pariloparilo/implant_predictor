@@ -2,6 +2,7 @@ import collections
 import hashlib
 import json
 import platform
+import random
 import struct
 from pathlib import Path
 
@@ -66,6 +67,31 @@ def discover(root, suffixes):
     return paths
 
 
+def select_sample(paths, root, limit, mode='first', seed=42):
+    if mode not in ('first', 'balanced_folder'):
+        raise ValueError('audit_sampling은 first 또는 balanced_folder여야 합니다.')
+    if limit is None:
+        return paths
+    if mode == 'first':
+        return paths[:limit]
+    buckets = collections.defaultdict(list)
+    for path in paths:
+        rel = path.relative_to(root)
+        buckets[rel.parts[0] if len(rel.parts) > 1 else '(root)'].append(path)
+    rng = random.Random(seed)
+    for name in sorted(buckets):
+        rng.shuffle(buckets[name])
+    selected = []
+    while buckets and len(selected) < limit:
+        for name in sorted(list(buckets)):
+            selected.append(buckets[name].pop())
+            if not buckets[name]:
+                del buckets[name]
+            if len(selected) == limit:
+                break
+    return selected
+
+
 def audit(config, run_id, limit=None):
     data = config_path(config, config["data_root"])
     labels = data / config["label_root"]
@@ -109,7 +135,8 @@ def audit(config, run_id, limit=None):
     out = new_output(config, "audit", run_id)
     rows, issues, used_images = [], [], set()
     root_types, field_missing, key_counts = collections.Counter(), collections.Counter(), collections.Counter()
-    selected = label_files if limit is None else label_files[:limit]
+    selected = select_sample(label_files, labels, limit,
+                             config.get('audit_sampling', 'first'), config.get('seed', 42))
 
     def issue(sample_id, kind, rel):
         issues.append({"sample_id": sample_id, "issue": kind, "label_relpath": rel})
@@ -229,7 +256,8 @@ def audit(config, run_id, limit=None):
     eligible = [r for r in rows if r["status"] == "eligible"]
     full = len(selected) == len(label_files)
     write_json(out / "summary.json", {
-        "code_version": "0.2.0", "python": platform.python_version(),
+        "code_version": "0.3.0", "python": platform.python_version(),
+        "audit_sampling": config.get('audit_sampling', 'first'),
         "full_scan": full, "label_files_total": len(label_files), "label_files_scanned": len(rows),
         "image_files_total": len(image_files), "eligible_rows": len(eligible),
         "excluded_rows": len(rows) - len(eligible),

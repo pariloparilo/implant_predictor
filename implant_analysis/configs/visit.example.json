@@ -1,0 +1,68 @@
+{
+  "data_root": "/실제_마운트_경로/KYUN_data/122/150.인체 내 식립된 임플란트 영상 데이터/01.데이터",
+  "image_extensions": [
+    ".jpg",
+    ".jpeg",
+    ".png"
+  ],
+  "work_dir": "/기관이_허용한_작업경로/implant_work",
+  "json_encoding": "utf-8-sig",
+  "record_path": [],
+  "fields": {
+    "serial": "일련번호",
+    "modality": "촬영방법",
+    "manufacturer": "제조사",
+    "model": "모델명",
+    "diameter": "직경",
+    "length": "길이",
+    "tooth_position": "식립위치",
+    "implant_date": "식립일자",
+    "capture_date": "촬영일자",
+    "hospital": "촬영병원"
+  },
+  "pairing": {
+    "mode": "relative_stem",
+    "csv": null,
+    "verified": false
+  },
+  "aliases_csv": null,
+  "grouping": {
+    "csv": null,
+    "kind": "unverified",
+    "verified": false,
+    "verification_note": ""
+  },
+  "seed": 42,
+  "training": {
+    "weights_path": null,
+    "weights_sha256": null,
+    "epochs": 10,
+    "warmup_epochs": 2,
+    "batch_size": 16,
+    "image_size": 224,
+    "head_lr": 0.001,
+    "backbone_lr": 0.0001,
+    "weight_decay": 0.0001,
+    "patience": 5,
+    "device": "cuda",
+    "seed": 42,
+    "rotation_degrees": 3.0,
+    "brightness_contrast": 0.1,
+    "amp": true
+  },
+  "provider_partitions": [
+    {
+      "id": "provided_train",
+      "label_root": "1.Training/라벨링데이터",
+      "image_root": "1.Training/원천데이터"
+    },
+    {
+      "id": "provided_validation",
+      "label_root": "2.Validation/라벨링데이터",
+      "image_root": "2.Validation/원천데이터"
+    }
+  ],
+  "visit": {
+    "sample_per_partition": 150
+  }
+}

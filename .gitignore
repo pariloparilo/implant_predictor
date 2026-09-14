@@ -76,3 +76,9 @@ tmp/
 *.tar
 *.tar.gz
 *.7z
+
+# Provider data directories and private field notes
+원천데이터/
+1.Training/
+2.Validation/
+local_notes/

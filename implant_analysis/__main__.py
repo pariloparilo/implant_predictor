@@ -34,6 +34,11 @@ def main():
     command = sub.add_parser('plot')
     command.add_argument('--evaluation-dir', required=True)
     command.add_argument('--training-dir')
+    command = sub.add_parser('visit', help='제공 Training/Validation을 보존하는 현장 점검')
+    command.add_argument('--config', required=True)
+    command.add_argument('--run-id', required=True)
+    command.add_argument('--stage', choices=['preflight', 'sample', 'full'], default='preflight')
+    command.add_argument('--check-ml', action='store_true')
     args = parser.parse_args()
     try:
         if args.command == 'plot':
@@ -41,7 +46,16 @@ def main():
             out = plot_results(args.evaluation_dir, args.training_dir)
         else:
             config = load_config(args.config)
-            if args.command == 'audit':
+            if 'provider_partitions' in config and args.command != 'visit':
+                raise ValueError('제공 Training/Validation 설정은 현재 visit 점검 전용입니다. 분할 정책을 확인한 뒤 학습 연결이 필요합니다.')
+            if args.command == 'visit':
+                from .visit import visit
+                out = visit(config, args.run_id, args.stage, args.check_ml)
+                from .visit import read_json
+                if read_json(out / 'summary.json')['status'] == 'COMPLETED_WITH_ERRORS':
+                    print(f'일부 점검 실패: {out}/READ_ON_SCREEN.txt', file=sys.stderr)
+                    return 2
+            elif args.command == 'audit':
                 out = audit(config, args.run_id, args.limit)
             elif args.command == 'split-draft':
                 out = split_draft(config, args.audit_dir, args.run_id)
